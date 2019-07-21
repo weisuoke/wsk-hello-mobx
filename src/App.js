@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { observer, inject } from "mobx-react";
+import Fun from "./Fun";
+import TodoList from "./components/TodoList";
+import Topic from "./components/Topic";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import ReviewApp from "./components/ReviewApp";
+
+@inject("BirdStore", "TodoListStore")
+@observer
+class App extends React.Component {
+  handleSubmit = e => {
+    e.preventDefault();
+    const bird = this.bird.value;
+    this.store.addBird(bird);
+  };
+
+  get store() {
+    return this.props.BirdStore;
+  }
+
+  render() {
+    console.log(this.props);
+    return (
+      <div className="container">
+        <ReviewApp />
+        <header className="App-header">
+          <Topic />
+          <TodoList />
+          {/* <Fun /> */}
+          <p>{this.store.firstBird}</p>
+          <form onSubmit={e => this.handleSubmit(e)}>
+            <input
+              type="text"
+              placeholder="Enter your bird name"
+              ref={input => (this.bird = input)}
+            />
+            <button>Add Bird</button>
+          </form>
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
